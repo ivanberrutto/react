@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from 'react';
 import useCounter from "../hooks/useCounter.jsx";
 import styled from "styled-components";
+import axios from "axios";
 
 const Button = styled.button`
   background: blue;
@@ -31,6 +32,7 @@ function MyComponent({ message }) {
             <button onClick={reset}>Reset</button>
             <h1>{message}</h1>
             <Form></Form>
+            <ApiMessage></ApiMessage>
             <ul>
                 {items.map((item, index) => (
                     <li key={index}>{item}</li>
@@ -48,20 +50,31 @@ MyComponent.propTypes = {
 
 function ApiMessage(){
     const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Llamada a una API cuando el componente se monta
     useEffect(() => {
-        fetch('https://jsonplaceholder.typicode.com/posts')
-            .then(response => response.json())
-            .then(data => setData(data));
-    }, []); // El arreglo vacío significa que solo se ejecuta una vez al montar el componente
+        axios.get('https://jsonplaceholder.typicode.com/posts')
+            .then((response) => {
+                setData(response.data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                setError(error);
+                setLoading(false);
+            });
+    }, []);
 
-    return(
-        <div>
-            <h1>Fetched Data</h1>
-            {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <p>Loading...</p>}
-        </div>
-    )
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error fetching data</p>;
+
+    return (
+        <ul>
+            {data.map((post) => (
+                <li key={post.id}>{post.title}</li>
+            ))}
+        </ul>
+    );
 }
 
 function Form() {
