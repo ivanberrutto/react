@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import useCounter from "../hooks/useCounter.jsx";
 import styled from "styled-components";
 import axios from "axios";
+import useSWR from "swr";
 
 const Button = styled.button`
   background: blue;
@@ -49,31 +50,22 @@ MyComponent.propTypes = {
 };
 
 function ApiMessage(){
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const fetcher = (url) => axios.get(url).then((res) => res.data);
+    const { data, error, isLoading } = useSWR(
+        "https://jsonplaceholder.typicode.com/posts",
+        fetcher
+    );
 
-    useEffect(() => {
-        axios.get('https://jsonplaceholder.typicode.com/posts')
-            .then((response) => {
-                setData(response.data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                setError(error);
-                setLoading(false);
-            });
-    }, []);
-
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error fetching data</p>;
+    if (isLoading) return <p>🔄 Loading...</p>;
+    if (error) return <p>❌ Error</p>;
 
     return (
-        <ul>
+        <div>
+            <h2>Posts</h2>
             {data.map((post) => (
-                <li key={post.id}>{post.title}</li>
+                <p key={post.id}>{post.title}</p>
             ))}
-        </ul>
+        </div>
     );
 }
 
