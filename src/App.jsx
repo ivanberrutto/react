@@ -5,14 +5,17 @@ import Home from './pages/Home';
 import About from './pages/About';
 
 function App() {
+    //const { theme, toggleTheme } = useContext(ThemeContext);
     return (
+
         <div>
+
             <nav>
                 <Link to="/">Home</Link> | <Link to="/about">About</Link>
             </nav>
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
+                <Route path="/" element={<Home/>}/>
+                <Route path="/about" element={<About/>}/>
             </Routes>
         </div>
     );

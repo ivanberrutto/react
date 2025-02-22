@@ -1,14 +1,23 @@
 
 import PropTypes from "prop-types";
 import { useState, useEffect } from 'react';
+import useCounter from "../hooks/useCounter.jsx";
+import styled from "styled-components";
+
+const Button = styled.button`
+  background: blue;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  &:hover {
+    background: darkblue;
+  }
+`;
 
 function MyComponent({ message }) {
-    const [count, setCount] = useState(0); // Declare state
-
-    const increment = () => setCount(count + 1); // Update state
-
-    const decrement = () => setCount(count - 1);
-
+    const { count, increment, decrement, reset } = useCounter();
 
 
 
@@ -17,8 +26,9 @@ function MyComponent({ message }) {
     return (
         <div>
             <p>Count: {count}</p>
-            <button onClick={increment}>Increment</button>
+            <Button onClick={increment}>Increment</Button>
             <button onClick={decrement}>Decrement</button>
+            <button onClick={reset}>Reset</button>
             <h1>{message}</h1>
             <Form></Form>
             <ul>
