@@ -1,13 +1,19 @@
 
 import './App.css'
-import MyComponent from './components/MyComponent';
-import { Card } from './components/MyComponent';
+import { Link, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import About from './pages/About';
 
 function App() {
     return (
         <div>
-            <MyComponent message="Hello from App!" />
-            <Card title="Hello from App!" content="leo cagon" />
+            <nav>
+                <Link to="/">Home</Link> | <Link to="/about">About</Link>
+            </nav>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+            </Routes>
         </div>
     );
 }
