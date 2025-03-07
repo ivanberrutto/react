@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import useCounter from "../hooks/useCounter.jsx";
 import styled from "styled-components";
 import axios from "axios";
-import useSWR from "swr";
+import process from "prop-types/prop-types.js";
 
 const Button = styled.button`
   background: blue;
@@ -50,21 +50,54 @@ MyComponent.propTypes = {
 };
 
 function ApiMessage(){
-    const fetcher = (url) => axios.get(url).then((res) => res.data);
-    const { data, error, isLoading } = useSWR(
-        "https://jsonplaceholder.typicode.com/posts",
-        fetcher
-    );
+    const [tweets, setTweets] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const token = 'Bearer AAAAAAAAAAAAAAAAAAAAAIsMzgEAAAAAAOu%2FjItvgHU3JQ42zG6Gh7IMFfg%3DM83PDVfw3gOJ3Fa02T46gT1c2kVi8YmIaTQ4oiS7iBGYh4ZlPG';
 
-    if (isLoading) return <p>🔄 Loading...</p>;
-    if (error) return <p>❌ Error</p>;
+    useEffect(() => {
+        const fetchTweets = async () => {
+            try {
+                const response = await axios.get(
+                    'https://cors-anywhere.herokuapp.com/https://api.twitter.com/2/tweets/search/recent?query=reactjs&max_results=10',
+                    {
+                        headers: {
+                            Authorization: token, // Reemplaza con tu Bearer Token
+                        },
+                    }
+                );
+
+                setTweets(response.data.data); // Guarda los tweets en el estado
+                setLoading(false); // Indica que la carga ha terminado
+            } catch (error) {
+                console.log('Límite total:', error.response.headers['x-rate-limit-limit']);
+                console.log('Solicitudes restantes:', error.response.headers['x-rate-limit-remaining']);
+                console.log('Tiempo de reinicio:', error.response.headers['x-rate-limit-reset']);
+                setError(error); // Guarda el error en el estado
+                setLoading(false); // Indica que la carga ha terminado
+                console.error('Error al obtener tweets:', error);
+            }
+        };
+
+        fetchTweets();
+    }, []);
+
+    if (loading) {
+        return <p>Cargando tweets...</p>;
+    }
+
+    if (error) {
+        return <p>Error al cargar los tweets: {error.message}</p>;
+    }
 
     return (
         <div>
-            <h2>Posts</h2>
-            {data.map((post) => (
-                <p key={post.id}>{post.title}</p>
-            ))}
+            <h1>Tweets recientes sobre ReactJS</h1>
+            <ul>
+                {tweets.map(tweet => (
+                    <li key={tweet.id}>{tweet.text}</li>
+                ))}
+            </ul>
         </div>
     );
 }
