@@ -1,10 +1,8 @@
 
 import PropTypes from "prop-types";
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import useCounter from "../hooks/useCounter.jsx";
 import styled from "styled-components";
-import axios from "axios";
-import process from "prop-types/prop-types.js";
 
 const Button = styled.button`
   background: blue;
@@ -33,7 +31,6 @@ function MyComponent({ message }) {
             <button onClick={reset}>Reset</button>
             <h1>{message}</h1>
             <Form></Form>
-            <ApiMessage></ApiMessage>
             <ul>
                 {items.map((item, index) => (
                     <li key={index}>{item}</li>
@@ -48,7 +45,7 @@ function MyComponent({ message }) {
 MyComponent.propTypes = {
     message: PropTypes.string,
 };
-
+/*
 function ApiMessage(){
     const [tweets, setTweets] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -101,7 +98,7 @@ function ApiMessage(){
         </div>
     );
 }
-
+*/
 function Form() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
